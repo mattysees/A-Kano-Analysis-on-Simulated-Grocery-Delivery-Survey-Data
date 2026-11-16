@@ -1,0 +1,198 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+
+\definecolor{navy}{HTML}{1F3864}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+\setlist{itemsep=0.2em,topsep=0.2em}
+
+\definecolor{codegray}{HTML}{6B7280}
+\definecolor{codebg}{HTML}{F7F8FA}
+\lstdefinestyle{rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  commentstyle=\color{codegray}\itshape,
+  keywordstyle=\color{navy}\bfseries,
+  stringstyle=\color{teal!70!black},
+  numbers=left, numberstyle=\tiny\color{codegray}, numbersep=6pt,
+  backgroundcolor=\color{codebg},
+  frame=single, rulecolor=\color{navy!30},
+  breaklines=true, breakatwhitespace=false,
+  columns=fullflexible, keepspaces=true,
+  showstringspaces=false, tabsize=2,
+  xleftmargin=1.6em, framexleftmargin=1.2em,
+  aboveskip=0.6em, belowskip=0.4em
+}
+\lstset{style=rcode}
+
+\newcommand{\disclosure}{%
+  \noindent\fcolorbox{navy}{navy!6}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{%
+    \textbf{All responses in this study are synthetic.} No real customers were surveyed. The findings below show how the method performs on data with a known structure and should not be read as evidence about real customer preferences.}}%
+}
+
+\title{\textcolor{navy}{\textbf{Kano Pilot Study on Simulated Data}}\\[0.3em]
+\large Which Grocery Delivery App Features Should Be Built First?}
+\author{Matthew Caulfield\\
+\small \href{mailto:matthew@caulfield.co}{matthew@caulfield.co}\ \textbullet\ \href{https://github.com/mattysees}{github.com/mattysees}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\disclosure
+
+\vspace{0.5em}
+\begin{abstract}
+\noindent This project tests a complete Kano analysis workflow on simulated survey data. Eight features of a fictional grocery delivery app were asked about in paired questions, and 400 synthetic respondents were generated from three planted customer segments. An analysis that never saw the segment labels grouped respondents by their Kano classifications and recovered the planted segments with an adjusted Rand index of 0.919, placing 97 percent of respondents in the correct group. The project shows that the method can find clear structure when it exists and why pooled results can hide it.
+\end{abstract}
+
+\section{Purpose}
+The Kano method sorts product features by how customers react to having them and to not having them. Fielding a real survey takes days or weeks, and a real survey gives no way to check whether the analysis found the truth. Simulating respondents from segments planted in advance allows the full pipeline, from instrument design to segmentation, to be tested against a known answer before it is used on real people.
+
+\section{Instrument and Method}
+\subsection{Survey design}
+Each of eight features was asked as a pair of questions: how the respondent would feel if the app had the feature (functional) and how they would feel if it did not (dysfunctional). Every question used the same five answers: ``I like it that way,'' ``It must be that way,'' ``I am neutral,'' ``I can live with it that way,'' and ``I dislike it that way.'' The features were live order tracking, approving substitutions, delivery within 30 minutes, loyalty rewards, recipe suggestions, plastic-free packaging, chat with the shopper, and a price-match guarantee.
+
+\subsection{Classification}
+Each answer pair was classified with the standard Kano evaluation table (Table~\ref{tab:eval}). For every feature, two scores were calculated from the Attractive (A), One-dimensional (O), Must-be (M), and Indifferent (I) counts, with Reverse and Questionable answers excluded:
+\[
+\text{Better} = \frac{A + O}{A + O + M + I}, \qquad
+\text{Worse} = -\,\frac{O + M}{A + O + M + I}.
+\]
+Better is the share of respondents who would be more satisfied with the feature. Worse is the share who would be less satisfied without it. In the figures, Worse is shown as a positive quantity named dissatisfaction if the feature is missing.
+
+\begin{table}[H]
+\centering
+\caption{Standard Kano evaluation table. A = Attractive, O = One-dimensional, M = Must-be, I = Indifferent, R = Reverse, Q = Questionable.}
+\label{tab:eval}
+\begin{tabular}{lccccc}
+\toprule
+Functional $\backslash$ Dysfunctional & Like & Must-be & Neutral & Live with & Dislike \\
+\midrule
+Like      & Q & A & A & A & O \\
+Must-be   & R & I & I & I & M \\
+Neutral   & R & I & I & I & M \\
+Live with & R & I & I & I & M \\
+Dislike   & R & R & R & R & Q \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Simulation}
+A total of 400 synthetic respondents were generated from three planted segments: budget-focused (151 respondents), convenience-seeking (163), and sustainability-minded (86). Each segment had its own probabilities of seeing a feature as Attractive, One-dimensional, Must-be, Indifferent, or Reverse. For each respondent and feature, a category was drawn, a matching answer pair was chosen at random, and a 4 percent chance of a contradictory answer pair was added as noise. The planted segment labels were stored in a separate file that the analysis did not read.
+
+\subsection{Segmentation}
+Respondents were grouped with $k$-means clustering. Each respondent was described by 24 indicators: for each of the eight features, whether their answer pair was classified as Attractive, One-dimensional, or Must-be. The number of clusters was chosen with an elbow chart, and the clusters were then compared with the planted labels using a cross-tabulation and the adjusted Rand index, where 1 means perfect agreement and 0 means no better than chance.
+
+\section{Results with All Respondents Combined}
+When all respondents are combined (Figure~\ref{fig:pooled}), most features fall in a middle band, with satisfaction gain of about 0.25 to 0.45 and low to moderate dissatisfaction if missing. One feature stands out. Approving substitutions has a low satisfaction gain (about 0.26) but high dissatisfaction if missing (about 0.76), the pattern of a must-be feature: customers expect it and notice only when it is absent. Pooling hides the more interesting result, which is that different groups want different things.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\linewidth]{../figures/better_worse_overall.png}
+\caption{Satisfaction if each feature is present against dissatisfaction if it is missing, all 400 synthetic respondents combined. Dashed lines mark the averages across features.}
+\label{fig:pooled}
+\end{figure}
+
+\section{Results by Discovered Segment}
+The clustering found three groups of 153, 86, and 161 respondents. Figures~\ref{fig:better} and~\ref{fig:worse} show each feature's satisfaction gain and dissatisfaction if missing within each group, and Table~\ref{tab:profile} summarizes the pattern.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\linewidth]{../figures/cluster_heatmap.png}
+\caption{Satisfaction gain (Better) from each feature, by discovered cluster.}
+\label{fig:better}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\linewidth]{../figures/cluster_heatmap_worse.png}
+\caption{Dissatisfaction if each feature is missing (Worse), by discovered cluster.}
+\label{fig:worse}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Signature features of each discovered segment. Values are satisfaction gain and dissatisfaction if missing.}
+\label{tab:profile}
+\small
+\begin{tabular}{@{}llccl@{}}
+\toprule
+Segment & Feature & Gain & If missing & Kano type \\
+\midrule
+Cluster 1: budget & Loyalty rewards & 0.92 & 0.89 & One-dimensional \\
+ & Price-match guarantee & 0.85 & 0.88 & One-dimensional \\
+\addlinespace
+Cluster 2: sustainability & Plastic-free packaging & 0.91 & 0.87 & One-dimensional \\
+ & Recipe suggestions & 0.91 & 0.08 & Attractive \\
+\addlinespace
+Cluster 3: convenience & Delivery within 30 minutes & 0.88 & 0.88 & One-dimensional \\
+ & Live order tracking & 0.94 & 0.10 & Attractive \\
+ & Chat with shopper & 0.88 & 0.11 & Attractive \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Approving substitutions is a must-be for clusters 1 and 3, where dissatisfaction if missing is 0.85 and 0.91, and a minor concern for cluster 2, at 0.34. Its satisfaction gain is low in every cluster, between 0.23 and 0.30, so a satisfaction chart alone would have led to ignoring it. This is the main reason to ask each feature as a pair of questions.
+
+\section{Did the Method Recover the Hidden Structure?}
+The clusters matched the planted segments closely (Table~\ref{tab:recovery}). The adjusted Rand index was 0.919, and 389 of the 400 respondents (97 percent) were placed in the cluster that corresponds to their planted segment.
+
+\begin{table}[H]
+\centering
+\caption{Discovered clusters against planted segments (number of respondents).}
+\label{tab:recovery}
+\begin{tabular}{lccc}
+\toprule
+Planted segment & Cluster 1 & Cluster 2 & Cluster 3 \\
+\midrule
+Budget-focused        & 148 & 2  & 1   \\
+Convenience-seeking   & 4   & 1  & 158 \\
+Sustainability-minded & 1   & 83 & 2   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The number of clusters was chosen with the elbow chart in Figure~\ref{fig:elbow}. Within-cluster variation fell sharply from two clusters to three, from about 750 to about 610, and more gently afterward. The bend is moderate rather than sharp, and the true number of segments was known in advance. With real data, the choice of three would need further support, such as checking that the clusters are stable across repeated runs and that the groups make practical sense.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{../figures/cluster_elbow.png}
+\caption{Total within-cluster sum of squares for two to six clusters.}
+\label{fig:elbow}
+\end{figure}
+
+\section{What This Would Mean for a Real Client}
+If real respondents showed this pattern, the implications would be as follows. The must-be feature, substitution approval, should be protected first, because failing on it would lose the two largest groups. Each group then has its own route to differentiation: price features for the budget group, packaging and recipes for the sustainability group, and speed and tracking for the convenience group. A single feature list for everyone would invest in features that most customers do not value. This section illustrates how such findings would be read and is not a recommendation for any actual company.
+
+\section{Limits}
+The segments, preferences, and group sizes were invented by the author, so recovering them shows only that the method works when the structure is clear. Real data is noisier, samples are smaller, and respondents may interpret the paired questions inconsistently. Statistical tests comparing the clusters are not reported as evidence, because the clusters were built from the same answers and would differ by construction. The next step would be to field the same instrument to a sample of real customers.
+
+\section{Reproducibility}
+All code, the synthetic data, and the figures are available at \url{https://github.com/mattysees/REPOSITORY-NAME}. Two R scripts, run in order, reproduce every number and chart. A fixed random seed makes the results identical on every run. The complete code for both scripts appears in Appendix~\ref{app:code}.
+
+\appendix
+\section{Code}\label{app:code}
+Both scripts are written in R and use the packages \texttt{ggplot2} and, optionally, \texttt{ggrepel}. Run them in order from the project folder. The first script writes the synthetic responses to \texttt{data/}, and the second reads them and writes the tables to \texttt{data/} and the charts to \texttt{../figures/}.
+
+\subsection{Script 1: Simulating the synthetic survey responses}
+\lstinputlisting[caption={\texttt{01\_simulate\_responses.R}}]{../R/01_simulate_responses.R}
+
+\subsection{Script 2: Classifying, clustering, and charting}
+\lstinputlisting[caption={\texttt{02\_analyze\_kano.R}}]{../R/02_analyze_kano.R}
+
+\end{document}
