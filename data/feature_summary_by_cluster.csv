@@ -1,0 +1,25 @@
+"feature","A","O","M","I","R","Q","modal","better","worse","cluster","n_respondents"
+"Live order tracking",6,17,6,115,5,4,"I",0.16,-0.16,1,153
+"Approve substitutions",9,34,90,12,1,7,"M",0.297,-0.855,1,153
+"Delivery within 30 minutes",8,7,8,124,1,5,"I",0.102,-0.102,1,153
+"Loyalty rewards",8,122,3,8,5,7,"O",0.922,-0.887,1,153
+"Recipe suggestions",5,9,3,124,4,8,"I",0.099,-0.085,1,153
+"Plastic-free packaging",6,1,2,137,3,4,"I",0.048,-0.021,1,153
+"Chat with shopper",4,5,6,123,4,11,"I",0.065,-0.08,1,153
+"Price-match guarantee",9,113,13,9,3,6,"O",0.847,-0.875,1,153
+"Live order tracking",6,3,2,72,0,3,"I",0.108,-0.06,2,86
+"Approve substitutions",6,15,13,48,1,3,"I",0.256,-0.341,2,86
+"Delivery within 30 minutes",2,1,3,76,1,3,"I",0.037,-0.049,2,86
+"Loyalty rewards",3,3,1,71,4,4,"I",0.077,-0.051,2,86
+"Recipe suggestions",67,5,1,6,2,5,"A",0.911,-0.076,2,86
+"Plastic-free packaging",7,69,4,4,0,2,"O",0.905,-0.869,2,86
+"Chat with shopper",0,3,3,76,0,4,"I",0.037,-0.073,2,86
+"Price-match guarantee",4,3,3,71,2,3,"I",0.086,-0.074,2,86
+"Live order tracking",129,14,2,7,3,6,"A",0.941,-0.105,3,161
+"Approve substitutions",7,27,110,7,4,6,"M",0.225,-0.907,3,161
+"Delivery within 30 minutes",9,118,10,8,2,14,"O",0.876,-0.883,3,161
+"Loyalty rewards",3,10,1,136,4,7,"I",0.087,-0.073,3,161
+"Recipe suggestions",11,3,1,140,3,3,"I",0.09,-0.026,3,161
+"Plastic-free packaging",6,3,2,145,3,2,"I",0.058,-0.032,3,161
+"Chat with shopper",121,11,6,12,2,9,"A",0.88,-0.113,3,161
+"Price-match guarantee",4,6,8,130,6,7,"I",0.068,-0.095,3,161
